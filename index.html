@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Magic Scissor - Barber Shop</title>
+<style>
+  /* Reset & base */
+  * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+  body { background: #1a1a1a; color: #eee; line-height: 1.6; scroll-behavior: smooth; }
+  a { color: #f4c430; text-decoration: none; transition: color 0.3s ease; }
+  a:hover { color: #fff; }
+
+  .container { max-width: 1100px; margin: auto; padding: 1rem 2rem 4rem; }
+  header { background: #111; padding: 1.5rem 0; text-align: center; position: sticky; top: 0; z-index: 10; box-shadow: 0 2px 5px rgba(0,0,0,0.8); }
+  header h1 { font-size: 2.8rem; letter-spacing: 4px; color: #f4c430; font-weight: 900; user-select: none; }
+  nav { margin-top: 0.8rem; }
+  nav a { margin: 0 15px; font-weight: 600; font-size: 1rem; }
+
+  section { padding: 3rem 0 4rem; border-bottom: 1px solid #333; }
+  section h2 { font-size: 2.4rem; color: #f4c430; margin-bottom: 1rem; border-bottom: 3px solid #f4c430; padding-bottom: 0.3rem; letter-spacing: 1.5px; }
+
+  /* Hero */
+  #home { background: url('https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?auto=format&fit=crop&w=1350&q=80') no-repeat center center/cover;
+    height: 80vh; color: #fff; display: flex; flex-direction: column; justify-content: center; align-items: center; text-shadow: 1px 1px 10px rgba(0,0,0,0.8); position: relative; }
+  #home::after { content: ""; position: absolute; inset: 0; background: rgba(26,26,26,0.7); z-index: 0; }
+  #home > * { position: relative; z-index: 1; }
+  #home h2 { font-size: 3.5rem; margin-bottom: 1rem; animation: fadeInDown 1.5s ease forwards; }
+  #home p { font-size: 1.4rem; max-width: 600px; text-align: center; animation: fadeInUp 1.5s ease forwards; }
+  #home button { margin-top: 2rem; background: #f4c430; border: none; color: #111; font-weight: 700; padding: 0.8rem 2rem; font-size: 1.2rem; border-radius: 30px; cursor: pointer; transition: background-color 0.3s ease; animation: fadeInUp 1.7s ease forwards; }
+  #home button:hover { background: #e6b922; }
+
+  @keyframes fadeInDown { 0% {opacity: 0; transform: translateY(-40px);} 100% {opacity: 1; transform: translateY(0);} }
+  @keyframes fadeInUp { 0% {opacity: 0; transform: translateY(40px);} 100% {opacity: 1; transform: translateY(0);} }
+
+  /* Services */
+  #services ul { list-style: none; display: grid; grid-template-columns: repeat(auto-fit,minmax(280px,1fr)); gap: 1.8rem; }
+  #services ul li { background: #222; padding: 1.8rem 1.5rem; border-radius: 12px; box-shadow: 0 0 8px #f4c430aa; transition: transform 0.3s ease; }
+  #services ul li:hover { transform: translateY(-8px); }
+  #services ul li h3 { margin-bottom: 0.6rem; color: #f4c430; }
+  #services ul li p { font-size: 0.95rem; color: #ddd; }
+
+  /* Pricing */
+  #pricing table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+  #pricing th, #pricing td { padding: 12px 20px; border-bottom: 1px solid #444; text-align: left; font-weight: 600; }
+  #pricing th { background: #333; color: #f4c430; }
+  #pricing tr:hover { background: #2a2a2a; }
+
+  /* Gallery */
+  #gallery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.2rem; margin-top: 2rem; }
+  #gallery-grid img { width: 100%; height: 250px; object-fit: cover; border-radius: 12px; transition: transform 0.4s ease, box-shadow 0.4s ease; }
+  #gallery-grid img:hover { transform: scale(1.08); box-shadow: 0 0 15px #f4c430aa; }
+
+  /* Appointment form */
+  form { background: #222; padding: 2rem; border-radius: 12px; max-width: 500px; margin: 1rem auto 0; box-shadow: 0 0 12px #f4c430aa; }
+  form label { display: block; margin-bottom: 0.5rem; font-weight: 600; color: #f4c430; }
+  form input, form select, form textarea { width: 100%; padding: 0.6rem 0.8rem; margin-bottom: 1.2rem; border-radius: 6px; border: none; font-size: 1rem; outline: none; }
+  form button { background: #f4c430; border: none; padding: 0.8rem 1.8rem; border-radius: 30px; font-weight: 700; cursor: pointer; color: #111; font-size: 1.1rem; transition: background-color 0.3s ease; }
+  form button:hover { background: #e6b922; }
+
+  #confirmationMessage, #contactResponse { max-width: 500px; margin: 1rem auto 0; background: #2b2b2b; padding: 1rem 1.2rem; border-radius: 8px; text-align: center; color: #a6e22e; font-weight: 700; box-shadow: 0 0 8px #a6e22eaa; }
+
+  /* Queue */
+  #queueStatus { max-width: 500px; margin: 2rem auto 0; background: #222; padding: 1.5rem 2rem; border-radius: 12px; box-shadow: 0 0 10px #f4c430aa; text-align: center; }
+  #queueStatus p { font-size: 1.2rem; margin: 0.8rem 0; font-weight: 600; }
+
+  /* Footer */
+  footer { background: #111; color: #888; padding: 1rem; text-align: center; font-size: 0.9rem; margin-top: 3rem; border-top: 1px solid #333; }
+  footer span { color: #f4c430; font-weight: 700; }
+
+  @media(max-width: 600px) {
+    header h1 { font-size: 2rem; }
+    nav a { margin: 0 10px; font-size: 0.9rem; }
+    #home h2 { font-size: 2.5rem; }
+    #home p { font-size: 1.1rem; padding: 0 1rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Magic Scissor</h1>
+  <nav>
+    <a href="#home">Home</a>
+    <a href="#services">Services</a>
+    <a href="#pricing">Pricing</a>
+    <a href="#gallery">Gallery</a>
+    <a href="#appointment">Book</a>
+    <a href="#queue">Queue</a>
+    <a href="#contact">Contact</a>
+  </nav>
+</header>
+
+<section id="home" aria-label="Home">
+  <h2>Welcome to Magic Scissor</h2>
+  <p>Your ultimate barber destination for all haircuts, shaving & beard styling — starting at just 500 RS!</p>
+  <button onclick="document.getElementById('appointment').scrollIntoView({behavior: 'smooth'})">Book Appointment</button>
+</section>
+
+<section id="services" class="container">
+  <h2>Our Services</h2>
+  <ul>
+    <li><h3>All Haircuts</h3><p>Classic styles done to perfection for any occasion.</p></li>
+    <li><h3>Customized Haircuts</h3><p>Tailored looks crafted to your personality.</p></li>
+    <li><h3>Hairstyling</h3><p>Trendy styles to keep you looking sharp.</p></li>
+    <li><h3>Facial Shaving</h3><p>Smooth shaves with premium care.</p></li>
+    <li><h3>Beard Cutting</h3><p>Trimmed and styled for a polished look.</p></li>
+  </ul>
+</section>
+
+<section id="pricing" class="container">
+  <h2>Pricing</h2>
+  <table>
+    <thead><tr><th>Service</th><th>Price (RS)</th></tr></thead>
+    <tbody>
+      <tr><td>Basic Haircut</td><td>500</td></tr>
+      <tr><td>Customized Haircut</td><td>700+</td></tr>
+      <tr><td>Facial Shaving</td><td>500</td></tr>
+      <tr><td>Beard Cutting</td><td>500</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<section id="gallery" class="container">
+  <h2>Our Gallery</h2>
+  <div id="gallery-grid">
+    <img src="https://tse1.mm.bing.net/th/id/OIP.YJjrWzCqusBjmamyBUjIbQHaLH?cb=12&pid=Api" alt="Haircut and Beard Trim">
+    <img src="https://tse1.mm.bing.net/th/id/OIP.X1KUGNYbOXsqFMqIralU4AHaHa?cb=12&pid=Api" alt="Beard Styling">
+    <img src="https://tse3.mm.bing.net/th/id/OIP.ylcq5uFWD6m9mwqxjC8hIQHaE8?cb=12&pid=Api" alt="Medium Hairstyle">
+    <img src="https://tse3.mm.bing.net/th/id/OIP.d_PFYo4h_DS8d_tJDFMMzAHaEo?cb=12&pid=Api" alt="Barbershop Shave">
+  </div>
+</section>
+
+<section id="appointment" class="container">
+  <h2>Book Your Appointment</h2>
+  <form id="bookingForm" novalidate>
+    <label for="service">Select Service:</label>
+    <select id="service" required>
+      <option value="" disabled selected>Select a service</option>
+      <option value="Basic Haircut">Basic Haircut (500 RS)</option>
+      <option value="Customized Haircut">Customized Haircut (700+ RS)</option>
+      <option value="Facial Shaving">Facial Shaving (500 RS)</option>
+      <option value="Beard Cutting">Beard Cutting (500 RS)</option>
+    </select>
+    <label for="date">Choose Date:</label>
+    <input type="date" id="date" required />
+    <label for="time">Choose Time:</label>
+    <input type="time" id="time" required />
+    <label for="name">Your Name:</label>
+    <input type="text" id="name" required />
+    <label for="phone">Phone Number:</label>
+    <input type="tel" id="phone" pattern="[0-9]{10}" required />
+    <button type="submit">Book Appointment</button>
+  </form>
+  <div id="confirmationMessage"></div>
+</section>
+
+<section id="queue" class="container">
+  <h2>Queue Status</h2>
+  <div id="queueStatus">
+    <p id="currentServing">Currently Serving Appointment #1</p>
+    <p id="yourPosition">Your Position in Queue: #0</p>
+  </div>
+</section>
+
+<section id="contact" class="container">
+  <h2>Contact Magic Scissor</h2>
+  <form id="contactForm" novalidate>
+    <label for="contactName">Name:</label>
+    <input type="text" id="contactName" required />
+    <label for="contactEmail">Email:</label>
+    <input type="email" id="contactEmail" required />
+    <label for="contactMessage">Message:</label>
+    <textarea id="contactMessage" rows="5" required></textarea>
+    <button type="submit">Send</button>
+  </form>
+  <div id="contactResponse"></div>
+</section>
+
+<footer>
+  <p>© 2025 Magic Scissor | Made with ❤️ by <span>Lakshay</span></p>
+</footer>
+
+<script>
+  // Minimum date
+  const dateInput = document.getElementById('date');
+  const today = new Date().toISOString().split('T')[0];
+  dateInput.setAttribute('min', today);
+
+  const bookingForm = document.getElementById('bookingForm');
+  const confirmationMessage = document.getElementById('confirmationMessage');
+  bookingForm.addEventListener('submit', e => {
+    e.preventDefault();
+    if(!bookingForm.checkValidity()) {
+      confirmationMessage.textContent = "Please fill out all fields correctly.";
+      confirmationMessage.style.color = 'red'; return;
+    }
+    const service = document.getElementById('service').value;
+    const date = dateInput.value;
+    const time = document.getElementById('time').value;
+    const name = document.getElementById('name').value;
+    const phone = document.getElementById('phone').value;
+    confirmationMessage.textContent = `Thanks ${name}! Appointment booked for ${service} on ${date} at ${time}.`;
+    confirmationMessage.style.color = '#a6e22e';
+    bookingForm.reset();
+  });
+
+  // Queue
+  function updateQueue() {
+    const yourPosition = Math.floor(Math.random() * 5) + 1;
+    document.getElementById('currentServing').textContent = `Currently Serving Appointment #1`;
+    document.getElementById('yourPosition').textContent = `Your Position in Queue: #${yourPosition}`;
+  }
+  updateQueue();
+
+  // Contact form
+  const contactForm = document.getElementById('contactForm');
+  const contactResponse = document.getElementById('contactResponse');
+  contactForm.addEventListener('submit', e => {
+    e.preventDefault();
+    if(!contactForm.checkValidity()) {
+      contactResponse.textContent = "Please fill out all fields correctly.";
+      contactResponse.style.color = 'red'; return;
+    }
+    const name = document.getElementById('contactName').value;
+    contactResponse.textContent = `Thank you, ${name}! We'll reply soon.`;
+    contactResponse.style.color = '#a6e22e';
+    contactForm.reset();
+  });
+</script>
+</body>
+</html>
